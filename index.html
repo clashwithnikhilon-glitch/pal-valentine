@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Pal ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #ff6a88, #ff99ac);
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+}
+
+.container {
+  padding: 30px 20px;
+}
+
+img {
+  width: 90%;
+  max-width: 320px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2.2em;
+}
+
+button {
+  background: white;
+  color: #ff4f70;
+  border: none;
+  padding: 15px 25px;
+  font-size: 1.1em;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 25px;
+}
+
+.message {
+  display: none;
+  margin-top: 30px;
+  font-size: 1.1em;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<img src="pal.jpg" alt="Pal ❤️">
+
+<h1>Happy Valentine’s Day & Happy Birthday</h1>
+<h2>Pal 🌸</h2>
+
+<p>One day. Two reasons. One beautiful girl.</p>
+
+<button onclick="showMessage()">Tap to see my message 👆</button>
+
+<div class="message" id="msg">
+<p>Dear Pal,</p>
+
+<p>
+Today is Valentine’s Day AND your birthday —  
+clearly the universe wanted to show off.
+</p>
+
+<p>
+Distance exists only on maps, not in my heart.
+Thank you for loving me and tolerating my nonsense.
+</p>
+
+<p>
+Happy Birthday, my Valentine ❤️  
+Always yours,<br><b>Nik</b>
+</p>
+</div>
+
+</div>
+
+<script>
+function showMessage() {
+  document.getElementById("msg").style.display = "block";
+}
+</script>
+
+</body>
+</html>
