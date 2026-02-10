@@ -12,10 +12,40 @@ body {
   font-family: Arial, sans-serif;
   color: white;
   text-align: center;
+  overflow-x: hidden;
 }
 
+/* ---------- ENTRY SCREEN ---------- */
+#gate {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #ff4f70, #ff8fa3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+#gate h1 {
+  font-size: 2.2em;
+  margin-bottom: 20px;
+}
+
+#gate button {
+  background: white;
+  color: #ff4f70;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1em;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+/* ---------- MAIN CONTENT ---------- */
 .container {
   padding: 30px 20px;
+  display: none;
 }
 
 img {
@@ -26,11 +56,20 @@ img {
   margin-bottom: 20px;
 }
 
+.fade-img {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 h1 {
   font-size: 2.2em;
 }
 
-button {
+button.main-btn {
   background: white;
   color: #ff4f70;
   border: none;
@@ -49,46 +88,134 @@ button {
   margin-left: auto;
   margin-right: auto;
   line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* ---------- FLOATING HEARTS ---------- */
+.heart-float {
+  position: fixed;
+  bottom: -20px;
+  font-size: 20px;
+  animation: floatUp 6s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+/* ---------- CONFETTI ---------- */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
-<img src="pal.jpg" alt="Pal ❤️">
-
-<h1>Happy Valentine’s Day & Happy Birthday</h1>
-<h2>Pal 🌸</h2>
-
-<p>One day. Two reasons. One beautiful girl.</p>
-
-<button onclick="showMessage()">Tap to see my message 👆</button>
-
-<div class="message" id="msg">
-<p>Dear Pal,</p>
-
-<p>
-Today is Valentine’s Day AND your birthday —  
-clearly the universe wanted to show off.
-</p>
-
-<p>
-Distance exists only on maps, not in my heart.
-Thank you for loving me and tolerating my nonsense.
-</p>
-
-<p>
-Happy Birthday, my Valentine ❤️  
-Always yours,<br><b>Nik</b>
-</p>
+<!-- 🔐 ARE YOU PAL SCREEN -->
+<div id="gate">
+  <h1>Are you Pal? ❤️</h1>
+  <button onclick="enterSite()">Yes, that’s me 😊</button>
 </div>
 
+<!-- 💖 MAIN CONTENT -->
+<div class="container" id="main">
+
+  <img src="pal.jpg" class="fade-img" alt="Pal ❤️">
+
+  <h1>Happy Valentine’s Day & Happy Birthday</h1>
+  <h2>Pal 🌸</h2>
+
+  <p>One day. Two reasons. One girl who owns my heart.</p>
+
+  <button class="main-btn" onclick="showMessage(); confetti(); playMusic()">
+    Tap to see my message 👆
+  </button>
+
+  <div class="message" id="msg"></div>
 </div>
 
 <script>
+/* ---------- ENTRY ---------- */
+function enterSite() {
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("main").style.display = "block";
+}
+
+/* ---------- FLOATING HEARTS ---------- */
+setInterval(() => {
+  const heart = document.createElement("div");
+  heart.className = "heart-float";
+  heart.innerText = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}, 500);
+
+/* ---------- TYPEWRITER MESSAGE ---------- */
+const text = `
+Dear Pal,
+
+Today is Valentine’s Day AND your birthday.
+Honestly… the universe peaked the day you were born.
+
+Even though we are miles apart,
+my heart refused to accept distance.
+
+Thank you for loving me,
+for tolerating my nonsense,
+and for choosing me every single day.
+
+Happy Birthday, my Valentine ❤️
+
+Always yours,
+Nik
+`;
+
+let i = 0;
 function showMessage() {
-  document.getElementById("msg").style.display = "block";
+  const msg = document.getElementById("msg");
+  msg.style.display = "block";
+  const interval = setInterval(() => {
+    msg.innerHTML += text.charAt(i);
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, 40);
+}
+
+/* ---------- CONFETTI ---------- */
+function confetti() {
+  for (let i = 0; i < 50; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.backgroundColor = `hsl(${Math.random()*360},100%,70%)`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+}
+
+/* ---------- MUSIC (OPTIONAL) ---------- */
+let music;
+function playMusic() {
+  if (!music) {
+    music = new Audio("music.mp3");
+    music.loop = true;
+    music.play();
+  }
 }
 </script>
 
