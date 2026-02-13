@@ -6,13 +6,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    height: 100%;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #141e30, #243b55);
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
     color: white;
     text-align: center;
     overflow: hidden;
+}
+
+/* Prevent white flash */
+body {
+    background-color: #ff758c;
 }
 
 .section {
@@ -46,7 +53,8 @@ button {
     font-size: 1em;
     cursor: pointer;
     background: white;
-    color: black;
+    color: #ff4e8a;
+    font-weight: bold;
     transition: 0.3s;
 }
 
@@ -54,16 +62,12 @@ button:hover {
     transform: scale(1.05);
 }
 
+/* Moving NO button */
 #noBtn {
     position: relative;
 }
 
-#gameCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
+/* Image container */
 #imageContainer {
     position: absolute;
     width: 100%;
@@ -71,32 +75,31 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 }
 
 #imageContainer img {
-    max-width: 75%;
+    max-width: 70%;
     border-radius: 20px;
     filter: blur(8px);
     transition: filter 2s ease;
 }
 
-.heart {
+/* Overlay text on image */
+.messageOverlay {
     position: absolute;
-    font-size: 28px;
-    cursor: pointer;
-    animation: pulse 1.6s infinite;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    background: rgba(0,0,0,0.4);
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.6; }
-}
-
-.message {
+.messageBox {
     max-width: 600px;
-    margin: auto;
-    margin-top: 10vh;
+    padding: 20px;
     line-height: 1.6;
     font-size: 1.1em;
 }
@@ -125,44 +128,35 @@ button:hover {
     <p>There will be tests.</p>
 </div>
 
-<!-- Game 1 Intro -->
-<div id="game1Intro" class="section">
-    <h2>First Test</h2>
-    <p>Erase the distance between us.</p>
+<!-- Game Intro -->
+<div id="gameIntro" class="section">
+    <h2>Erase the distance.</h2>
+    <p>Swipe slowly.</p>
 </div>
 
-<!-- Game 1 -->
-<div id="game1" class="section">
+<!-- Game -->
+<div id="game" class="section">
     <div id="imageContainer">
         <img id="mainImage" src="pal.jpg">
     </div>
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="canvas"></canvas>
 </div>
 
-<!-- Game 2 Intro -->
-<div id="game2Intro" class="section">
-    <h2>Second Test</h2>
-    <p>Find the hidden heart.</p>
-</div>
-
-<!-- Game 2 -->
-<div id="game2" class="section"></div>
-
-<!-- Final -->
+<!-- Final with image still visible -->
 <div id="final" class="section">
-    <div class="message">
-        <p>
-        Distance tried to convince me that space matters.  
-        But every quiet moment proved something stronger.  
-        <br><br>
-        I don’t love you loudly.  
-        I love you steadily.  
-        <br><br>
-        If this distance is a test,  
-        I’m not leaving the exam.  
-        <br><br>
-        — Nik
-        </p>
+    <div id="imageContainer">
+        <img src="pal.jpg" style="filter: blur(0px);">
+    </div>
+    <div class="messageOverlay">
+        <div class="messageBox">
+            Distance tried to convince me that space matters.<br><br>
+            But every quiet moment proved something stronger.<br><br>
+            I don’t love you loudly.<br>
+            I love you steadily.<br><br>
+            If this distance is a test,<br>
+            I’m not leaving the exam.<br><br>
+            — Nik
+        </div>
     </div>
 </div>
 
@@ -177,8 +171,8 @@ function switchScene(current, next, delay=0) {
 function goToScene2() {
     switchScene("scene1", "scene2");
     switchScene("scene2", "intro", 2500);
-    switchScene("intro", "game1Intro", 5000);
-    switchScene("game1Intro", "game1", 8000);
+    switchScene("intro", "gameIntro", 5000);
+    switchScene("gameIntro", "game", 8000);
     setTimeout(setupCanvas, 8000);
 }
 
@@ -190,18 +184,17 @@ noBtn.addEventListener("mouseover", () => {
     noBtn.style.top = Math.random() * 60 + "%";
 });
 
-/* Scratch Game */
-let canvas, ctx;
-let cleared = 0;
+/* Scratch effect */
+let canvas, ctx, cleared = 0;
 
 function setupCanvas() {
-    canvas = document.getElementById("gameCanvas");
+    canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = "#ff4e8a";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     canvas.addEventListener("mousemove", clearArea);
@@ -218,7 +211,6 @@ function clearArea(e) {
     ctx.fill();
 
     cleared++;
-
     if (cleared > 120) {
         revealImage();
     }
@@ -227,28 +219,8 @@ function clearArea(e) {
 function revealImage() {
     document.getElementById("mainImage").style.filter = "blur(0px)";
     setTimeout(() => {
-        switchScene("game1", "game2Intro");
-        setTimeout(() => {
-            switchScene("game2Intro", "game2");
-            startHeartGame();
-        }, 3000);
+        switchScene("game", "final");
     }, 2000);
-}
-
-/* Heart Game */
-function startHeartGame() {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤";
-
-    heart.style.left = Math.random() * 80 + "%";
-    heart.style.top = Math.random() * 70 + "%";
-
-    heart.onclick = () => {
-        switchScene("game2", "final");
-    };
-
-    document.getElementById("game2").appendChild(heart);
 }
 </script>
 
