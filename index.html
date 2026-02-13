@@ -9,18 +9,10 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(160deg, #0f0f1a, #1a1a2e, #2b1f3a);
-    background-size: 400% 400%;
-    animation: bgMove 20s ease infinite;
+    background: #111;
     color: white;
     text-align: center;
     overflow: hidden;
-}
-
-@keyframes bgMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
 }
 
 .section {
@@ -28,18 +20,27 @@ body {
     width: 100%;
     height: 100%;
     display: none;
-    padding: 40px 20px;
+    padding-top: 25vh;
     box-sizing: border-box;
 }
 
 .active {
     display: block;
-    animation: fadeIn 1.2s ease;
+    animation: fadeIn 1s ease;
 }
 
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+p {
+    opacity: 0.85;
 }
 
 button {
@@ -49,8 +50,8 @@ button {
     margin: 15px;
     font-size: 1em;
     cursor: pointer;
-    background: rgba(255,255,255,0.9);
-    color: #1a1a2e;
+    background: white;
+    color: black;
     transition: 0.3s;
 }
 
@@ -82,9 +83,9 @@ button:hover {
 
 .heart {
     position: absolute;
-    font-size: 26px;
+    font-size: 28px;
     cursor: pointer;
-    animation: pulse 1.8s infinite;
+    animation: pulse 1.6s infinite;
 }
 
 @keyframes pulse {
@@ -96,7 +97,7 @@ button:hover {
 .message {
     max-width: 600px;
     margin: auto;
-    margin-top: 15vh;
+    margin-top: 10vh;
     line-height: 1.6;
     font-size: 1.1em;
 }
@@ -150,7 +151,7 @@ button:hover {
         <br><br>
         — Nik
         </p>
-        <p style="margin-top:30px; font-size:0.9em; opacity:0.7;">
+        <p style="margin-top:30px; font-size:0.9em; opacity:0.6;">
         I hoped it would be you.
         </p>
     </div>
@@ -194,15 +195,15 @@ function setupCanvas() {
 }
 
 function clearArea(e) {
-    let x = e.clientX || e.touches[0].clientX;
-    let y = e.clientY || e.touches[0].clientY;
+    let x = e.clientX || (e.touches && e.touches[0].clientX);
+    let y = e.clientY || (e.touches && e.touches[0].clientY);
 
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
     ctx.arc(x, y, 50, 0, Math.PI * 2);
     ctx.fill();
 
-    cleared += 1;
+    cleared++;
 
     if (cleared > 120) {
         revealImage();
@@ -223,7 +224,7 @@ function startHeartGame() {
     heart.innerHTML = "❤";
 
     heart.style.left = Math.random() * 80 + "%";
-    heart.style.top = Math.random() * 80 + "%";
+    heart.style.top = Math.random() * 70 + "%";
 
     heart.onclick = () => {
         switchScene("game2", "final");
