@@ -9,7 +9,7 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: #111;
+    background: linear-gradient(135deg, #141e30, #243b55);
     color: white;
     text-align: center;
     overflow: hidden;
@@ -26,7 +26,7 @@ body {
 
 .active {
     display: block;
-    animation: fadeIn 1s ease;
+    animation: fadeIn 1.5s ease;
 }
 
 @keyframes fadeIn {
@@ -35,12 +35,7 @@ body {
 }
 
 h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
-p {
-    opacity: 0.85;
+    font-size: 30px;
 }
 
 button {
@@ -57,6 +52,10 @@ button {
 
 button:hover {
     transform: scale(1.05);
+}
+
+#noBtn {
+    position: relative;
 }
 
 #gameCanvas {
@@ -78,7 +77,7 @@ button:hover {
     max-width: 75%;
     border-radius: 20px;
     filter: blur(8px);
-    transition: filter 1.5s ease;
+    transition: filter 2s ease;
 }
 
 .heart {
@@ -110,16 +109,26 @@ button:hover {
 <div id="scene1" class="section active">
     <h2>If this is not Pal...</h2>
     <p>You shouldn't be here.</p>
-    <button onclick="toScene2()">YES</button>
-    <button onclick="fadeOut()">NO</button>
+    <button onclick="goToScene2()">YES</button>
+    <button id="noBtn">NO</button>
 </div>
 
 <!-- Scene 2 -->
 <div id="scene2" class="section">
-    <h2>And if you are...</h2>
-    <p>Are you my Chubbu?</p>
-    <button onclick="startGame()">YES</button>
-    <button onclick="startGame()">NO</button>
+    <h2>So it is you...</h2>
+    <p>I had a feeling.</p>
+</div>
+
+<!-- Intro -->
+<div id="intro" class="section">
+    <h2>This won't be simple.</h2>
+    <p>There will be tests.</p>
+</div>
+
+<!-- Game 1 Intro -->
+<div id="game1Intro" class="section">
+    <h2>First Test</h2>
+    <p>Erase the distance between us.</p>
 </div>
 
 <!-- Game 1 -->
@@ -130,53 +139,58 @@ button:hover {
     <canvas id="gameCanvas"></canvas>
 </div>
 
+<!-- Game 2 Intro -->
+<div id="game2Intro" class="section">
+    <h2>Second Test</h2>
+    <p>Find the hidden heart.</p>
+</div>
+
 <!-- Game 2 -->
 <div id="game2" class="section"></div>
 
-<!-- Final Message -->
+<!-- Final -->
 <div id="final" class="section">
     <div class="message">
         <p>
         Distance tried to convince me that space matters.  
-        But every late night call, every quiet pause,
-        every moment where you stayed —
-        proved something stronger.  
+        But every quiet moment proved something stronger.  
         <br><br>
         I don’t love you loudly.  
         I love you steadily.  
-        In the quiet ways that remain even when everything else fades.  
         <br><br>
         If this distance is a test,  
         I’m not leaving the exam.  
         <br><br>
         — Nik
         </p>
-        <p style="margin-top:30px; font-size:0.9em; opacity:0.6;">
-        I hoped it would be you.
-        </p>
     </div>
 </div>
 
 <script>
-function switchScene(current, next) {
-    document.getElementById(current).classList.remove("active");
-    document.getElementById(next).classList.add("active");
+function switchScene(current, next, delay=0) {
+    setTimeout(() => {
+        document.getElementById(current).classList.remove("active");
+        document.getElementById(next).classList.add("active");
+    }, delay);
 }
 
-function toScene2() {
+function goToScene2() {
     switchScene("scene1", "scene2");
+    switchScene("scene2", "intro", 2500);
+    switchScene("intro", "game1Intro", 5000);
+    switchScene("game1Intro", "game1", 8000);
+    setTimeout(setupCanvas, 8000);
 }
 
-function fadeOut() {
-    document.getElementById("scene1").innerHTML =
-    "<h2>Then this story was never meant for you.</h2>";
-}
+/* NO button runs away */
+const noBtn = document.getElementById("noBtn");
+noBtn.addEventListener("mouseover", () => {
+    noBtn.style.position = "absolute";
+    noBtn.style.left = Math.random() * 80 + "%";
+    noBtn.style.top = Math.random() * 60 + "%";
+});
 
-function startGame() {
-    switchScene("scene2", "game1");
-    setupCanvas();
-}
-
+/* Scratch Game */
 let canvas, ctx;
 let cleared = 0;
 
@@ -213,11 +227,15 @@ function clearArea(e) {
 function revealImage() {
     document.getElementById("mainImage").style.filter = "blur(0px)";
     setTimeout(() => {
-        switchScene("game1", "game2");
-        startHeartGame();
-    }, 1500);
+        switchScene("game1", "game2Intro");
+        setTimeout(() => {
+            switchScene("game2Intro", "game2");
+            startHeartGame();
+        }, 3000);
+    }, 2000);
 }
 
+/* Heart Game */
 function startHeartGame() {
     let heart = document.createElement("div");
     heart.className = "heart";
